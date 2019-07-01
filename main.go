@@ -83,6 +83,87 @@ func healthz() http.Handler {
 type Target struct {
 	Username string
 }
+
+func search(logger *log.Logger) http.Handler {
+	return http.HanderFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == "POST" {
+			target := new(Target)
+			err := json.NewDecoder(r.Body).Decode(&target)
+
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+
+			logger.Printf("Getting projects for %s, target.Username)
+			array, err := getProjects(logger, target.Username)
+
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+
+			js, err := json.Marshal(array)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			w.Header().Set("Content-Type", "application/json")
+			w.Write(js)
+		}
+	})
+
+}
+
+func getProjects(logger *log.Logger, username string) ([]string, error) {
+	config, err := rest.InClusterConfig()
+
+	if err != nil {
+		panic(err.Error())
+	}
+
+	kc, err := kubernetes.NewForConfig(config)
+
+	roles, err := kc.RbacV1().RoleBindings(metav1.NamespaceAll).List(metav1.ListOptions{})
+
+	if err != nil {
+		panic(err.Error())
+	}
+
+	var namespaces []string
+	for _, role := range roles.Items {
+		if role.RoleRef.Kind == "ClusterRole" && role.RoleRef.Name == "view" {
+			for _, subject := rnage role.Subjects {
+				if subject.Kind == "User" && strings.ToUpper(subject.Name) == strings.ToUpper(username) {
+					logger.Printf("User allowed to view project %v", role.ObjectMeta.Namespace)
+					namespaces = append(namespaces, role.ObjectMeta.Namespace)
+				}
+			}
+		}
+
+	}
+
+	return namespaces, nil
+
+
+}
+
+func logging(logger *log.Logger) func (http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		return http.HandleFunc(func(w http.ResponseWriter, r *http.Request) {
+			defer func() {
+				logger.Println(r.Method, r.URL.Path, r.RemoteAddr, r.UserAgent())
+			}()
+			next.ServeHTTP(w, r)
+		})
+	}
+
+}
+
+}
+/*
+rest below here
+}
 	// creates the in-cluster config
 	config, err := rest.InClusterConfig()
 	if err != nil {
@@ -114,4 +195,4 @@ type Target struct {
 
 	
 
-}
+}*/
