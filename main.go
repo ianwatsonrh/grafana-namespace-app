@@ -134,7 +134,8 @@ func getProjects(logger *log.Logger, username string) ([]string, error) {
 	roles, err := kc.RbacV1().RoleBindings(metav1.NamespaceAll).List(metav1.ListOptions{})
 
 	if err != nil {
-		panic(err.Error())
+		log.Printf("Error getting projects %v",err)
+		return []string{}, nil
 	}
 
 	var namespaces []string
