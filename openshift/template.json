@@ -82,7 +82,7 @@
 	  "sourceStrategy": {
             "from": {
               "kind": "ImageStreamTag",
-              "name": "golang:${GOLANG_VERSION}"
+              "name": "go-toolset-rhel7:${GOLANG_VERSION}"
             }
 	  }
         },
@@ -171,7 +171,7 @@
     {
       "name": "SOURCE_REPOSITORY_URL",
       "description": "The URL of the repository with your application source code",
-      "value": "ssh://github.com/ianwatsonrh/grafana-namespace-app.git"
+      "value": "ssh://git@github.com/ianwatsonrh/grafana-namespace-app.git"
     },
     {
       "name": "SOURCE_REPOSITORY_REF",
@@ -191,6 +191,14 @@
       "description": "Github trigger secret.  A difficult to guess string encoded as part of the webhook URL.  Not encrypted.",
       "generate": "expression",
       "from": "[a-zA-Z0-9]{40}"
+    },
+    {
+      "name": "NAME",
+      "value": "admin-app"
+    },
+    {
+      "name": "GOLANG_VERSION",
+      "value": "latest"
     }
   ]
 }

@@ -5,7 +5,7 @@ oc process -f gotemplate.json -p SOURCE_REPOSITOR_URL -p NAMESPACE< -p CLUSTER_R
 
 datasource.js - var interpolated = {"username": this.contextSrv.user.login}; then add contextSrv into constructor
 
-
+oc import-image devtools/go-toolset-rhel7 --from=registry.access.redhat.com/devtools/go-toolset-rhel7 --confirm
 oc create secret generic scmsecret --from-file=ssh-privatekey=$HOME/.ssh/id_rsa --dry-run -o json | oc apply -f -
 oc annotate secret scmsecret 'build.openshift.io/source-secret-match-uri-1=ssh://github.com/ianwatsonrh/*'
 
