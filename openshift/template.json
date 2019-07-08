@@ -164,7 +164,9 @@
                   }
                 ]
               }
-            ]
+            ],
+	    "serviceAccount": "${SERVICE_ACCOUNT}",
+            "serviceAccountName": "${SERVICE_ACCOUNT}"
           }
         }
       }
@@ -174,7 +176,7 @@
     {
       "name": "SOURCE_REPOSITORY_URL",
       "description": "The URL of the repository with your application source code",
-      "value": "ssh://git@github.com/ianwatsonrh/grafana-namespace-app.git"
+      "value": "https://github.com/ianwatsonrh/grafana-namespace-app.git"
     },
     {
       "name": "SOURCE_REPOSITORY_REF",
@@ -202,6 +204,10 @@
     {
       "name": "GOLANG_VERSION",
       "value": "latest"
+    },
+    {
+      "name": "SERVICE_ACCOUNT",
+      "value": "cluster-reader"
     }
   ]
 }
