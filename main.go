@@ -126,10 +126,16 @@ func getProjects(logger *log.Logger, username string) ([]string, error) {
 	config, err := rest.InClusterConfig()
 
 	if err != nil {
-		panic(err.Error())
+		log.Printf("Error setting up projects %v", err)
+		return []string{}, err
 	}
 
 	kc, err := kubernetes.NewForConfig(config)
+
+	if err != nil {
+		log.Printf("Error creating kc object %v", err)
+		return []string{}, err
+	}
 
 	roles, err := kc.RbacV1().RoleBindings(metav1.NamespaceAll).List(metav1.ListOptions{})
 

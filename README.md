@@ -20,4 +20,9 @@ oc create secret generic scmsecret --from-literal=password=Value --type=kubernet
 oc annotate secret scmsecret 'build.openshift.io/source-secret-match-uri-1=https://github.com/ianwatsonrh/*'
 ```
 
+
+# Invoke
+oc create user test
+oc adm add-role-to-user view test
+curl http://admin-app-iw.apps.cacb.example.opentlc.com/search -X POST -H "Content-Type: application/json" --data '{"username":"test"}' -k
  
