@@ -312,7 +312,7 @@
                         "persistentVolumeClaim": {
                           "claimName": "grafana-plugin"
                         }
-                    }
+                    },
                     {
                         "name": "grafana-datasources",
                         "secret": {
