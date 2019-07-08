@@ -408,6 +408,44 @@
     "status": {
         "loadBalancer": {}
     }
+  },
+  {
+    "apiVersion": "v1",
+    "kind": "ServiceAccount",
+    "metadata": {
+        "annotations": {
+            "serviceaccounts.openshift.io/oauth-redirectreference.grafana": "{\"kind\":\"OAuthRedirectReference\",\"apiVersion\":\"v1\",\"reference\":{\"kind\":\"Route\",\"name\":\"grafana\"}}"
+        },
+        "creationTimestamp": null,
+        "name": "grafana",
+        "selfLink": "/api/v1/namespaces/openshift-monitoring/serviceaccounts/grafana"
+    }
+  },
+  {
+    "apiVersion": "route.openshift.io/v1",
+    "kind": "Route",
+    "metadata": {
+        "name": "grafana",
+        "selfLink": "/apis/route.openshift.io/v1/namespaces/openshift-monitoring/routes/grafana"
+    },
+    "spec": {
+        "host": "",
+        "port": {
+            "targetPort": "https"
+        },
+        "tls": {
+            "termination": "reencrypt"
+        },
+        "to": {
+            "kind": "Service",
+            "name": "grafana",
+            "weight": 100
+        },
+        "wildcardPolicy": "None"
+    },
+    "status": {
+        "ingress": null
+    }
   }
   ],
   "parameters": [
