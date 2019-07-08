@@ -249,6 +249,10 @@
                             {
                                 "mountPath": "/var/lib/grafana/plugins",
                                 "name": "grafana-plugin"                        
+                            },
+                            {
+                                "mountPath": "/grafana-dashboard-definitions/0",
+                                "name": "grafana-dashboard-definitions"
                             }
                         ]
                     },
@@ -308,11 +312,16 @@
                         "name": "grafana-storage"
                     },
                     {
+                        "emptyDir": {},
+                        "name": "grafana-dashboard-definitions"
+
+                    }
+                    {
                         "name": "grafana-plugin",
                         "persistentVolumeClaim": {
                           "claimName": "grafana-plugin"
                         }
-                    }
+                    },
                     {
                         "name": "grafana-datasources",
                         "secret": {
