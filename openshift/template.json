@@ -308,6 +308,12 @@
                         "name": "grafana-storage"
                     },
                     {
+                        "name": "grafana-plugin",
+                        "persistentVolumeClaim": {
+                          "claimName": "grafana-plugin"
+                        }
+                    }
+                    {
                         "name": "grafana-datasources",
                         "secret": {
                             "defaultMode": 420,
@@ -346,6 +352,23 @@
             }
         }
     }
+  },
+  {
+    "apiVersion": "v1",
+    "kind": "PersistentVolumeClaim",
+    "metadata": {
+        "name": "grafana-plugin"        
+    },
+    "spec": {
+        "accessModes": [
+            "ReadWriteOnce"
+        ],
+        "resources": {
+            "requests": {
+                "storage": "1Gi"
+            }
+        }        
+    }    
   },
   {
     "apiVersion": "v1",
