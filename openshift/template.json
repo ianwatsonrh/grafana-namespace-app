@@ -315,7 +315,7 @@
                         "emptyDir": {},
                         "name": "grafana-dashboard-definitions"
 
-                    }
+                    },
                     {
                         "name": "grafana-plugin",
                         "persistentVolumeClaim": {
