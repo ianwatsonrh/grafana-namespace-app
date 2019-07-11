@@ -1,26 +1,31 @@
-# Development
+# Summary
+
+This repository shows how to combine Openshift authentication and rolebindings with Grafana. This has been tested on Openshift 3.11. 
+
+We will create a Grafana plugin that will forward the username of the logged in user to a application. This application will check the users rolebindings using the Openshift API and return a list of projects a user can access.
+
+Openshift cluster administrators can then define Grafana dashboards that expose cluster metric stats that are RBAC'd based on a drop down of projects. 
+
+## Deployment
+
 ```
+# Backend App
 oc create sa cluster-reader
 oc adm policy add-cluster-role-to-user cluster-reader -z cluster-reader
 oc process -f openshift/template.json | oc apply -f- 
-
-#datasource.js - var interpolated = {"username": this.contextSrv.user.login}; then add contextSrv into constructor
-
 oc import-image devtools/go-toolset-rhel7 --from=registry.access.redhat.com/devtools/go-toolset-rhel7 --confirm
 
-
-Either SSH key or Token
+TODO - remove this section and make the repository read only in redhat-cop. Either SSH key or Token
 #ssh
 oc create secret generic scmsecret --from-file=ssh-privatekey=$HOME/.ssh/id_rsa --dry-run -o json | oc apply -f -
 oc annotate secret scmsecret 'build.openshift.io/source-secret-match-uri-1=ssh://github.com/ianwatsonrh/*'
-
 
 #token
 oc create secret generic scmsecret --from-literal=password=Value --type=kubernetes.io/basic-auth
 oc annotate secret scmsecret 'build.openshift.io/source-secret-match-uri-1=https://github.com/ianwatsonrh/*'
 
 
-#grafana
+# Grafana Dashboard
 oc create serviceaccount grafana
 oc create secret generic grafana-proxy --from-literal=session_secret=$(openssl rand -base64 13)
 oc create secret generic grafana-config --from-file=openshift/grafana.ini
@@ -35,14 +40,31 @@ oc delete pod $POD
 ```
 
 
-# Invoke example
+# Test
+
+## User setup example
+
+We use a htpasswd backed repository so we need to add a user manually. 
+
+By default explicit view role is required for the drop down to be populated. 
+```
 htpasswd -b /etc/origin/master/htpasswd test test
 oc create user test
-oc adm policy add-role-to-user view test
-curl http://admin-app-iw.apps.cacb.example.opentlc.com/search -X POST -H "Content-Type: application/json" --data '{"username":"test"}' -k
+```
 
+## Standard rolebinding setup
+
+In the example below user test will be available to view projects allow1 and allow2 but not block1. As we have given view permissions to the user. 
+
+```
 oc new-project allow1
 oc new-project allow2
 oc new-project block1
 oc adm policy add-role-to-user view test -n allow1
 oc adm policy add-role-to-user view test -n allow2
+```
+
+For testing we expose the backend application as a route. In production this would not be exposed. 
+```
+curl http://admin-app-iw.apps.cacb.example.opentlc.com/search -X POST -H "Content-Type: application/json" --data '{"username":"test"}' -k
+```
