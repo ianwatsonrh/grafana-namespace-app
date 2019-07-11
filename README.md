@@ -58,3 +58,5 @@ For testing we expose the backend application as a route. In production this wou
 ```
 curl http://admin-app-iw.apps.cacb.example.opentlc.com/search -X POST -H "Content-Type: application/json" --data '{"username":"test"}' -k
 ```
+
+![](img/RBAC_example.png)
