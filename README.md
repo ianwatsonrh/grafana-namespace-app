@@ -2,7 +2,7 @@
 ```
 oc create sa cluster-reader
 oc adm policy add-cluster-role-to-user cluster-reader -z cluster-reader
-oc process -f gotemplate.json -p SOURCE_REPOSITOR_URL -p NAMESPACE< -p CLUSTER_READER_SERVICE__ACCOUNT | oc appy -f- 
+oc process -f gotemplate.json | oc appy -f- 
 
 #datasource.js - var interpolated = {"username": this.contextSrv.user.login}; then add contextSrv into constructor
 
@@ -23,10 +23,9 @@ oc annotate secret scmsecret 'build.openshift.io/source-secret-match-uri-1=https
 #grafana
 oc create serviceaccount grafana
 oc create secret generic grafana-proxy --from-literal=session_secret=$(openssl rand -base64 13)
-oc create -f grafana-config.json
+oc create secret generic grafana-config --from-file=grafana.ini
 oc create -f grafana-dashboards.json
-oc get secrets grafana-datasources -o json --export -n openshift-monitoring > grafana-datasources.json
-oc create -f grafana-datasources.json
+oc create secret generic grafana-datasources --from-file=grafana-datasources.yaml
 oc adm policy add-cluster-role-to-user system:auth-delegator -z grafana
 
 ```
