@@ -8,7 +8,8 @@ describe('GenericDatasource', function() {
         ctx.$q = Q;
         ctx.backendSrv = {};
         ctx.templateSrv = {};
-        ctx.ds = new Datasource({}, ctx.$q, ctx.backendSrv, ctx.templateSrv);
+        ctx.contextSrv = {user: "username"};
+        ctx.ds = new Datasource({}, ctx.$q, ctx.backendSrv, ctx.templateSrv, ctx.contextSrv);
     });
 
     it('should return an empty array when no targets are set', function(done) {
@@ -73,32 +74,6 @@ describe('GenericDatasource', function() {
         });
     });
 
-    it ('should return the metric target results when a target is set', function(done) {
-        ctx.backendSrv.datasourceRequest = function(request) {
-            var target = request.data.target;
-            var result = [target + "_0", target + "_1", target + "_2"];
-
-            return ctx.$q.when({
-                _request: request,
-                data: result
-            });
-        };
-
-        ctx.templateSrv.replace = function(data) {
-            return data;
-        }
-
-        ctx.ds.metricFindQuery('search').then(function(result) {
-            expect(result).to.have.length(3);
-            expect(result[0].text).to.equal('search_0');
-            expect(result[0].value).to.equal('search_0');
-            expect(result[1].text).to.equal('search_1');
-            expect(result[1].value).to.equal('search_1');
-            expect(result[2].text).to.equal('search_2');
-            expect(result[2].value).to.equal('search_2');
-            done();
-        });
-    });
 
     it ('should return the metric results when the target is an empty string', function(done) {
         ctx.backendSrv.datasourceRequest = function(request) {
@@ -156,32 +131,6 @@ describe('GenericDatasource', function() {
         });
     });
 
-    it ('should return the metric target results when the args are a string', function(done) {
-        ctx.backendSrv.datasourceRequest = function(request) {
-            var target = request.data.target;
-            var result = [target + "_0", target + "_1", target + "_2"];
-
-            return ctx.$q.when({
-                _request: request,
-                data: result
-            });
-        };
-
-        ctx.templateSrv.replace = function(data) {
-            return data;
-        }
-
-        ctx.ds.metricFindQuery('search').then(function(result) {
-            expect(result).to.have.length(3);
-            expect(result[0].text).to.equal('search_0');
-            expect(result[0].value).to.equal('search_0');
-            expect(result[1].text).to.equal('search_1');
-            expect(result[1].value).to.equal('search_1');
-            expect(result[2].text).to.equal('search_2');
-            expect(result[2].value).to.equal('search_2');
-            done();
-        });
-    });
 
     it ('should return data as text and as value', function(done) {
         var result = ctx.ds.mapToTextValue({data: ["zero", "one", "two"]});

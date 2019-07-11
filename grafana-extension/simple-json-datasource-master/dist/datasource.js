@@ -16,7 +16,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var GenericDatasource = exports.GenericDatasource = function () {
-  function GenericDatasource(instanceSettings, $q, backendSrv, templateSrv) {
+  function GenericDatasource(instanceSettings, $q, backendSrv, templateSrv, contextSrv) {
     _classCallCheck(this, GenericDatasource);
 
     this.type = instanceSettings.type;
@@ -24,6 +24,7 @@ var GenericDatasource = exports.GenericDatasource = function () {
     this.name = instanceSettings.name;
     this.q = $q;
     this.backendSrv = backendSrv;
+    this.contextSrv = contextSrv;
     this.templateSrv = templateSrv;
     this.withCredentials = instanceSettings.withCredentials;
     this.headers = { 'Content-Type': 'application/json' };
@@ -95,9 +96,7 @@ var GenericDatasource = exports.GenericDatasource = function () {
   }, {
     key: 'metricFindQuery',
     value: function metricFindQuery(query) {
-      var interpolated = {
-        target: this.templateSrv.replace(query, null, 'regex')
-      };
+      var interpolated = { "username": this.contextSrv.user.login };
 
       return this.doRequest({
         url: this.url + '/search',
