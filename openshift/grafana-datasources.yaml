@@ -4,7 +4,7 @@
         {"id":1,
          "orgId":1,
         "name":"App",
-        "type":"grafana-simple-json-datasource",
+        "type":"grafana-openshift-rbac",
             "typeLogoUrl":"public/plugins/grafana-simple-json-datasource/img/simpleJson_logo.svg",
         "access":"proxy",
         "url":"http://admin-app:8080",

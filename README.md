@@ -40,4 +40,9 @@ htpasswd -b /etc/origin/master/htpasswd test test
 oc create user test
 oc adm policy add-role-to-user view test
 curl http://admin-app-iw.apps.cacb.example.opentlc.com/search -X POST -H "Content-Type: application/json" --data '{"username":"test"}' -k
- 
+
+oc new-project allow1
+oc new-project allow2
+oc new-project block1
+oc adm policy add-role-to-user view test -n allow1
+oc adm policy add-role-to-user view test -n allow2
