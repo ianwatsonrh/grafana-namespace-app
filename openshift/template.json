@@ -460,7 +460,8 @@
     },
     {
       "name": "CONTEXT_DIR",
-      "description": "Set this to the relative path to your project if it is not in the root of your repository"
+      "description": "Set this to the relative path to your project if it is not in the root of your repository",
+      "value": "admin-app"
     },
     {
       "name": "APPLICATION_DOMAIN",

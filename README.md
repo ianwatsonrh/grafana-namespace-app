@@ -4,7 +4,7 @@ oc create sa cluster-reader
 oc adm policy add-cluster-role-to-user cluster-reader -z cluster-reader
 oc process -f gotemplate.json -p SOURCE_REPOSITOR_URL -p NAMESPACE< -p CLUSTER_READER_SERVICE__ACCOUNT | oc appy -f- 
 
-datasource.js - var interpolated = {"username": this.contextSrv.user.login}; then add contextSrv into constructor
+#datasource.js - var interpolated = {"username": this.contextSrv.user.login}; then add contextSrv into constructor
 
 oc import-image devtools/go-toolset-rhel7 --from=registry.access.redhat.com/devtools/go-toolset-rhel7 --confirm
 
