@@ -27,7 +27,7 @@ oc create -f grafana-config.json
 oc create -f grafana-dashboards.json
 oc get secrets grafana-datasources -o json --export -n openshift-monitoring > grafana-datasources.json
 oc create -f grafana-datasources.json
-
+oc adm policy add-cluster-role-to-user system:auth-delegator -z grafana
 
 ```
 
