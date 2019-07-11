@@ -81,6 +81,9 @@
             "uri": "${SOURCE_REPOSITORY_URL}",
             "ref": "${SOURCE_REPOSITORY_REF}"
           },
+	  "sourceSecret":{
+	    "name": "${SOURCE_SECRET}"
+	  },
           "contextDir": "${CONTEXT_DIR}"
         },
         "strategy": {
@@ -207,8 +210,8 @@
                         "args": [
                             "-config=/etc/grafana/grafana.ini"
                         ],
-                        "image": "registry.redhat.io/openshift3/grafana:v3.11.43",
-                        "imagePullPolicy": "IfNotPresent",
+                        "image": "registry.redhat.io/openshift3/grafana:v3.11",
+                        "imagePullPolicy": "Always",
                         "name": "grafana",
                         "ports": [
                             {
@@ -251,9 +254,9 @@
                                 "name": "grafana-plugin"                        
                             },
                             {
-                                "mountPath": "/grafana-dashboard-definitions/0",
-                                "name": "grafana-dashboard-definitions"
-                            }
+				"mountPath": "/grafana-dashboard-definitions/0/rbac-example",
+                                "name": "grafana-dashboard-rbac-example"
+			    }
                         ]
                     },
                     {
@@ -272,7 +275,7 @@
                             "-openshift-ca=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt",
                             "-skip-auth-regex=^/metrics"
                         ],
-                        "image": "registry.redhat.io/openshift3/oauth-proxy:v3.11.43",
+                        "image": "registry.redhat.io/openshift3/oauth-proxy:v3.11",
                         "imagePullPolicy": "IfNotPresent",
                         "name": "grafana-proxy",
                         "ports": [
@@ -308,11 +311,6 @@
                     {
                         "emptyDir": {},
                         "name": "grafana-storage"
-                    },
-                    {
-                        "emptyDir": {},
-                        "name": "grafana-dashboard-definitions"
-
                     },
                     {
                         "name": "grafana-plugin",
@@ -354,6 +352,13 @@
                             "defaultMode": 420,
                             "secretName": "grafana-proxy"
                         }
+                    },
+		    {
+                        "configMap": {
+                            "defaultMode": 420,
+                            "name": "grafana-dashboard-rbac-example"
+                        },
+                        "name": "grafana-dashboard-rbac-example"
                     }
                 ]
             }
@@ -483,6 +488,10 @@
     {
       "name": "SERVICE_ACCOUNT",
       "value": "cluster-reader"
+    },
+    {
+      "name": "SOURCE_SECRET",
+      "value": "scmsecret"
     }
   ]
 }

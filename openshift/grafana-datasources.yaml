@@ -7,10 +7,10 @@
         "type":"grafana-simple-json-datasource",
             "typeLogoUrl":"public/plugins/grafana-simple-json-datasource/img/simpleJson_logo.svg",
         "access":"proxy",
-        "url":"http://admin-app:8000",
+        "url":"http://admin-app:8080",
         "password":"",
-        "user":""
-        "database":""
+        "user":"",
+        "database":"",
         "basicAuth":false,
         "isDefault":true,
             "jsonData":{

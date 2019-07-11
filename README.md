@@ -2,7 +2,7 @@
 ```
 oc create sa cluster-reader
 oc adm policy add-cluster-role-to-user cluster-reader -z cluster-reader
-oc process -f gotemplate.json | oc appy -f- 
+oc process -f openshift/template.json | oc apply -f- 
 
 #datasource.js - var interpolated = {"username": this.contextSrv.user.login}; then add contextSrv into constructor
 
@@ -23,16 +23,21 @@ oc annotate secret scmsecret 'build.openshift.io/source-secret-match-uri-1=https
 #grafana
 oc create serviceaccount grafana
 oc create secret generic grafana-proxy --from-literal=session_secret=$(openssl rand -base64 13)
-oc create secret generic grafana-config --from-file=grafana.ini
-oc create -f grafana-dashboards.json
-oc create secret generic grafana-datasources --from-file=grafana-datasources.yaml
+oc create secret generic grafana-config --from-file=openshift/grafana.ini
+oc create -f openshift/grafana-dashboards.json
+oc create secret generic grafana-datasources --from-file=openshift/grafana-datasources.yaml
 oc adm policy add-cluster-role-to-user system:auth-delegator -z grafana
+oc create configmap grafana-dashboard-rbac-example --from-file=openshift/rbac-example.json
 
+POD=$(oc get pods | grep grafana | awk '{print $1}')
+oc rsync ./grafana-extension/simple-json-datasource-master $POD:/var/lib/grafana/plugins/
+oc delete pod $POD
 ```
 
 
-# Invoke
+# Invoke example
+htpasswd -b /etc/origin/master/htpasswd test test
 oc create user test
-oc adm add-role-to-user view test
+oc adm policy add-role-to-user view test
 curl http://admin-app-iw.apps.cacb.example.opentlc.com/search -X POST -H "Content-Type: application/json" --data '{"username":"test"}' -k
  
