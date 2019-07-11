@@ -1,6 +1,6 @@
 {
-  "name": "SimpleJson",
-  "id": "grafana-simple-json-datasource",
+  "name": "SimpleOpenshiftRBAC",
+  "id": "grafana-openshift-rbac",
   "type": "datasource",
 
   "partials": {
